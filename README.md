@@ -1,7 +1,7 @@
 <h1 align="center">Hi 👋, I'm Cihan</h1>
 <h3 align="center">A passionate frontend developer from Turkey</h3>
 
-- 🔭 I’m currently working on **ScheduLearn**
+- 🔭 I’m currently working on **Ephesus AR**
 
 - 🌱 I’m currently learning **Vue.JS and Angular**
 
