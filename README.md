@@ -1,9 +1,9 @@
 <h1 align="center">Hi 👋, I'm Cihan</h1>
-<h3 align="center">A passionate frontend developer from Turkey</h3>
+<h3 align="center">Co-Founder of Vaultworks Studio</h3>
 
-- 🔭 I’m currently working on **Ephesus AR**
+- 🔭 I’m currently working on **Merge! Letters**
 
-- 🌱 I’m currently learning **Vue.JS and Angular**
+- 🌱 I’m currently learning **Unity and C#**
 
 - 📫 How to reach me **cihan@cihancoban.com**
 
