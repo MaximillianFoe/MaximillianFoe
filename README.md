@@ -1,9 +1,9 @@
 <h1 align="center">Hi 👋, I'm Cihan</h1>
-<h3 align="center">Co-Founder of Vaultworks Studio</h3>
+<h3 align="center">Co-Founder of Hot Yeti Studio</h3>
 
-- 🔭 I’m currently working on **Merge! Letters**
+- 🔭 I’m currently working on **Pegher.io**
 
-- 🌱 I’m currently learning **Unity and C#**
+- 🌱 I’m currently learning **Unity**
 
 - 📫 How to reach me **cihan@cihancoban.com**
 
