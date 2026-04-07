@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monkey Playground</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+      color: white;
+    }
+
+    /* Background shapes */
+    .blob {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #ff7a18, transparent);
+      filter: blur(80px);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .blob:nth-child(2) {
+      background: radial-gradient(circle, #00c6ff, transparent);
+      top: 20%;
+      left: 70%;
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-40px); }
+    }
+
+    /* Monkey */
+    #monkey {
+      font-size: clamp(80px, 15vw, 140px);
+      cursor: grab;
+      user-select: none;
+      position: absolute;
+      transition: transform 0.15s ease;
+    }
+
+    #monkey:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+    }
+
+    /* Hint text */
+    .hint {
+      position: absolute;
+      bottom: 20px;
+      font-size: 14px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob"></div>
+  <div class="blob"></div>
+
+  <div id="monkey">🐵</div>
+
+  <div class="hint">Drag 🐵 • Click to change</div>
+
+  <script>
+    const monkey = document.getElementById("monkey");
+
+    const monkeys = ["🐵", "🙈", "🙉", "🙊"];
+    let index = 0;
+
+    // CLICK → change emoji
+    monkey.addEventListener("click", () => {
+      index = (index + 1) % monkeys.length;
+      monkey.textContent = monkeys[index];
+    });
+
+    // DRAG (mouse + touch)
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    const startDrag = (x, y) => {
+      isDragging = true;
+      const rect = monkey.getBoundingClientRect();
+      offsetX = x - rect.left;
+      offsetY = y - rect.top;
+    };
+
+    const moveDrag = (x, y) => {
+      if (!isDragging) return;
+      monkey.style.left = (x - offsetX) + "px";
+      monkey.style.top = (y - offsetY) + "px";
+    };
+
+    const stopDrag = () => {
+      isDragging = false;
+    };
+
+    // Mouse events
+    monkey.addEventListener("mousedown", (e) => {
+      startDrag(e.clientX, e.clientY);
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      moveDrag(e.clientX, e.clientY);
+    });
+
+    document.addEventListener("mouseup", stopDrag);
+
+    // Touch events (mobile)
+    monkey.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      startDrag(touch.clientX, touch.clientY);
+    });
+
+    document.addEventListener("touchmove", (e) => {
+      const touch = e.touches[0];
+      moveDrag(touch.clientX, touch.clientY);
+    });
+
+    document.addEventListener("touchend", stopDrag);
+
+    // Initial center
+    monkey.style.left = "50%";
+    monkey.style.top = "50%";
+    monkey.style.transform = "translate(-50%, -50%)";
+  </script>
+</body>
+</html>
