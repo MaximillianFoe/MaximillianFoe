@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monkey Playground</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cihan Çoban</title>
+
+  <!-- Favicon (emoji) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐵</text></svg>">
 
   <style>
     * {
@@ -16,14 +19,9 @@
     body {
       height: 100vh;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background: linear-gradient(135deg, #1e1e2f, #2a2a40);
-      color: white;
     }
 
-    /* Background shapes */
     .blob {
       position: absolute;
       width: 300px;
@@ -45,26 +43,16 @@
       50% { transform: translateY(-40px); }
     }
 
-    /* Monkey */
     #monkey {
-      font-size: clamp(80px, 15vw, 140px);
-      cursor: grab;
-      user-select: none;
       position: absolute;
-      transition: transform 0.15s ease;
+      font-size: clamp(80px, 15vw, 140px);
+      user-select: none;
+      cursor: grab;
     }
 
     #monkey:active {
       cursor: grabbing;
       transform: scale(1.1);
-    }
-
-    /* Hint text */
-    .hint {
-      position: absolute;
-      bottom: 20px;
-      font-size: 14px;
-      opacity: 0.6;
     }
   </style>
 </head>
@@ -75,70 +63,109 @@
 
   <div id="monkey">🐵</div>
 
-  <div class="hint">Drag 🐵 • Click to change</div>
-
   <script>
     const monkey = document.getElementById("monkey");
+    const emojis = ["🐵", "🙈", "🙉", "🙊"];
+    let emojiIndex = 0;
 
-    const monkeys = ["🐵", "🙈", "🙉", "🙊"];
-    let index = 0;
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
 
-    // CLICK → change emoji
-    monkey.addEventListener("click", () => {
-      index = (index + 1) % monkeys.length;
-      monkey.textContent = monkeys[index];
-    });
+    let vx = 0;
+    let vy = 0;
 
-    // DRAG (mouse + touch)
     let isDragging = false;
     let offsetX = 0;
     let offsetY = 0;
 
-    const startDrag = (x, y) => {
+    // CLICK → emoji change
+    monkey.addEventListener("click", () => {
+      emojiIndex = (emojiIndex + 1) % emojis.length;
+      monkey.textContent = emojis[emojiIndex];
+    });
+
+    function startDrag(px, py) {
       isDragging = true;
       const rect = monkey.getBoundingClientRect();
-      offsetX = x - rect.left;
-      offsetY = y - rect.top;
-    };
+      offsetX = px - rect.left;
+      offsetY = py - rect.top;
+      vx = 0;
+      vy = 0;
+    }
 
-    const moveDrag = (x, y) => {
+    function moveDrag(px, py) {
       if (!isDragging) return;
-      monkey.style.left = (x - offsetX) + "px";
-      monkey.style.top = (y - offsetY) + "px";
-    };
+      const newX = px - offsetX;
+      const newY = py - offsetY;
 
-    const stopDrag = () => {
+      vx = newX - x;
+      vy = newY - y;
+
+      x = newX;
+      y = newY;
+    }
+
+    function stopDrag() {
       isDragging = false;
-    };
+    }
 
-    // Mouse events
-    monkey.addEventListener("mousedown", (e) => {
-      startDrag(e.clientX, e.clientY);
-    });
-
-    document.addEventListener("mousemove", (e) => {
-      moveDrag(e.clientX, e.clientY);
-    });
-
+    // Mouse
+    monkey.addEventListener("mousedown", e => startDrag(e.clientX, e.clientY));
+    document.addEventListener("mousemove", e => moveDrag(e.clientX, e.clientY));
     document.addEventListener("mouseup", stopDrag);
 
-    // Touch events (mobile)
-    monkey.addEventListener("touchstart", (e) => {
-      const touch = e.touches[0];
-      startDrag(touch.clientX, touch.clientY);
+    // Touch
+    monkey.addEventListener("touchstart", e => {
+      const t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
     });
 
-    document.addEventListener("touchmove", (e) => {
-      const touch = e.touches[0];
-      moveDrag(touch.clientX, touch.clientY);
+    document.addEventListener("touchmove", e => {
+      const t = e.touches[0];
+      moveDrag(t.clientX, t.clientY);
     });
 
     document.addEventListener("touchend", stopDrag);
 
-    // Initial center
-    monkey.style.left = "50%";
-    monkey.style.top = "50%";
-    monkey.style.transform = "translate(-50%, -50%)";
+    function update() {
+      if (!isDragging) {
+        x += vx;
+        y += vy;
+
+        // friction
+        vx *= 0.98;
+        vy *= 0.98;
+
+        const rect = monkey.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+
+        // boundaries + bounce
+        if (x < 0) {
+          x = 0;
+          vx *= -0.8;
+        }
+        if (y < 0) {
+          y = 0;
+          vy *= -0.8;
+        }
+        if (x + w > window.innerWidth) {
+          x = window.innerWidth - w;
+          vx *= -0.8;
+        }
+        if (y + h > window.innerHeight) {
+          y = window.innerHeight - h;
+          vy *= -0.8;
+        }
+      }
+
+      monkey.style.left = x + "px";
+      monkey.style.top = y + "px";
+
+      requestAnimationFrame(update);
+    }
+
+    update();
   </script>
 </body>
 </html>
